@@ -9,123 +9,151 @@ platform=''
 age=''
 price=''
 achivments=''
-owners=''
+owner=''
 average=''
 median=''
 pozitive=''
 negative=''
-english=''
+english=1
+
 print('Какой жанр игры вас интересует?')
 genre=input().split(', ')
+
 print('Какая категория?')
 categories=input().split(', ')
+
 print('Выберите  тэги')
 tag=input().split(', ')
+
 print('Каких разработчиков любите?')
 developer=input().split(', ')
+
 print('Какие издатели?')
 publisher=input().split(', ')
+
 print('Ваша/Ваши платформа(ы)')
 platform=input().split(', ')
+
 print('Ваш возраст')
 age=input()
+
 if age=='':
     age='18'
+    
 print('Какая цена (минимум, максимум)?')
 price=input().split(', ')
-if price=='':
+if price==['']:
     price=['0','2000']
+    
 print('Количество достижений (минимальный порог)')
 achivments=input()
 if achivments=='':
     achivments='0'
+    
 print('Можете выбрать количество владельцев игры (минимум, максимум)')
-owners=input().split(', ')
-if owners=='':
-    owners=['0','8000000000']
+owner=input().split(', ')
+if owner==['']:
+    owner=['0','8000000000']
+    
 print('Количество позитивных отзывов (минимум, максимум)')
 pozitive=input().split(', ')
-if pozitive=='':
+if pozitive==['']:
     pozitive=['0','7000000000']
+    
 print('Количество негативных отзывов (минимум, максимум)')
 negative=input().split(', ')
-if negative =='':
+if negative ==['']:
     negative=['0','8000000000']
+    
 print('Aнглийский язык поддерживать (да/нет)')
 engli=input()
 if engli =='да':
     english=1
 else:
     english=0
-with open('steam.csv') as f:
+    
+with open('steam.csv', encoding='utf-8') as f:
     r=csv.reader(f)
     
     for line in r:
-        string=','.join(line)
-        if string[3]!=english:
+        if line[1]=='name':
             continue
-        if int(age)<int(string[7]):
+        string=','.join(line)#bесполезно, ибо я работаю с массивом
+        if line[3]!=english:
+            #continue
+            pass
+        if int(age)<int(line[7]):
             continue
-        if  int(achivments)<int(string[11]):
+            #pass
+        if  int(achivments)>int(line[11]):
             continue
-        if  int(pozitive[0])>int(string[12]) or int(pozitive[1])<int(string[12]):
+            #pass
+        if  int(pozitive[0])>int(line[12]) or int(pozitive[1])<int(line[12]):
             continue
-        if  int(negative[0])>int(string[13]) or int(negative[1])<int(string[13]):
+            #pass
+        if  int(negative[0])>int(line[13]) or int(negative[1])<int(line[13]):
             continue
-        if int(owner[0])>int(string[16]) or int(owner[1])<int(string[16]):
+        
+        if int(owner[0])>int(line[16].split('-')[0]) or int(owner[1])<int(line[16].split('-')[1]):#не то формат в таблице
             continue
-        if int(price[0])>int(string[17]) or int(owner[1])<int(string[17]):
+        
+        if  float(price[0])>float(line[17]) or float(price[1])<float(line[17]):
             continue
-        if  categories!='':
+        
+        if  categories!=['']:
             for i in range(len(categories)):
-                if not (categories[i] in string[8].split(';')):
+                if not (categories[i] in line[8].split(';')):
                     k=1
         if k==1:
             k=0
             continue
         
-        if genre!=''
+        if genre!=['']:
             for i in range(len(genre)):
-                if  not (genre[i] in string[9].split(';')):
+                if  not (genre[i] in line[9].split(';')):
                     k=1
         if k==1:
             k=0
             continue
 
-        if tag!='':
+        if tag!=['']:
             for i in range(len(tag)):
-                if  not (tag[i] in string[10].split(';')):
+                if  not (tag[i] in line[10].split(';')):
                     k=1
         if k==1:
             k=0
             continue
-        if developer!='':
+
+        if developer==['']:
+            k=1
+        if developer!=['']:
             for i in range(len(developer)):
-                if developer[i] in string[4].split(';'):
-                k=1
-                break
+                if developer[i] in line[4].split(';'):
+                    k=1
+                    break
         if k==0:
             continue
         else:
             k=0
-
-        if publisher!='':
+        if publisher==['']:
+            k=1
+        if publisher!=['']:
             for i in range(len(publisher)):
-                if publisher[i] in string[5].split(';'):
-                k=1
-                break
+                if publisher[i] in line[5].split(';'):
+                    k=1
         if k==0:
             continue
         else:
             k=0
-
-        if platform!='':
+        if platform==['']:
+            k=1
+        if platform!=['']:
             for i in range(len(platform)):
-                if platform[i] in string[6].split(';'):
-                k=1
-                break
+                if platform[i] in line[6].split(';'):
+                    k=1
+                    break
         if k==0:
             continue
         else:
             k=0
-        print(string[1])
+        print(line[1])
