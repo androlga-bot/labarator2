@@ -115,7 +115,6 @@ with open('steam.csv', encoding='utf-8') as f:
         line13.append(int(line[13]))
         line17.append(float(line[17]))
         line[16]=line[16].split('-')
-        list_Data=[line[4], line[11]]
         list_Line_Intrvl=[line[12], line[13], line[16], line[17]]
         list_Line_Word=[line[8], line[9], line[10], line[4], line[5], line[6]]
         if line[1]=='name':
@@ -125,7 +124,7 @@ with open('steam.csv', encoding='utf-8') as f:
             continue
         
         for i in range(2):
-            if check_Bigger ((list_Data[i]),(line[7+4*i])):
+            if check_Bigger ((list_Data_Bigger[i]),(line[7+4*i])):
                 continue
         
         for i in range(4):
