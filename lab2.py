@@ -89,8 +89,8 @@ def check_occrnc_intrvl(edge_left, value_floor, value_ceil, edge_right):
 def check_occrnc_word(list_check,list_confid):
     count=0
     if  list_check != ['']:
-            for i in range(len(list_check)):
-                if not (list_check[i] in list_confid.split(';')):
+            for counter in range(len(list_check)):
+                if not (list_check[counter] in list_confid.split(';')):
                     count += 1
             if count == len(list_check):
                 return True
@@ -124,17 +124,17 @@ with open('steam.csv', encoding='utf-8') as f:
         if line[3] != str(english):
             continue
         
-        for i in range(2):
-            if check_bigger ((list_data_bigger[i]),(line[7+4*i])):
+        for count in range(2):
+            if check_bigger ((list_data_bigger[count]),(line[7+4*count])):
                 continue
         
-        for i in range(4):
-            if check_occrnc_intrvl ((list_data_intrvl[i][0]), (list_line_intrvl[i][0]),
-                                    (list_line_intrvl[1]), (list_data_intrvl[i][1])):
+        for count in range(4):
+            if check_occrnc_intrvl ((list_data_intrvl[count][0]), (list_line_intrvl[count][0]),
+                                    (list_line_intrvl[1]), (list_data_intrvl[count][1])):
                 continue
          
-        for i in range(6):
-            if check_occrnc_word(list_data_word[i], list_line_word[i]):
+        for count in range(6):
+            if check_occrnc_word(list_data_word[count], list_line_word[count]):
                 continue
         print(line[1])
         
