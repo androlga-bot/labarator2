@@ -1,6 +1,6 @@
 import csv
 
-k = 0
+count = 0
 genre = ''
 categories = ''
 tag = ''
@@ -15,7 +15,7 @@ average = ''
 median = ''
 pozitive = ''
 negative = ''
-english = 1
+english = ''
 
 print('Какой жанр игры вас интересует?')
 genre = input().split(', ')
@@ -37,12 +37,11 @@ platform = input().split(', ')
 
 print('Ваш возраст')
 age = input()
-
 if age == '':
     age = '18'
     
 print('Какая цена (минимум, максимум)?')
-price=input().split(', ')
+price = input().split(', ')
 if price == ['']:
     price = ['0', '2000']
     
@@ -62,7 +61,7 @@ if pozitive == ['']:
     pozitive = ['0', '7000000000']
     
 print('Количество негативных отзывов (минимум, максимум)')
-negative=input().split(', ')
+negative = input().split(', ')
 if negative == ['']:
     negative = ['0','8000000000']
     
@@ -70,71 +69,90 @@ print('Aнглийский язык поддерживать (да/нет)')
 engli = input()
 if engli == 'да':
     english = 1
-else:
-    english=0
+elif engli == 'нет':
+    english = 0
         
         
-def check_bigger (val_floor, val_ceil):
-    if val_floor <= val_ceil:
-        return True
-    else:
-        return False
-
+def check_smaller (val_floor, val_ceil):
+    return val_floor <= val_ceil
+        
     
 def check_occrnc_intrvl(edge_left, value_floor, value_ceil, edge_right):
-    if  edge_left > int(value_floor) or edge_right < int(value_ceil):
-            return True
+    return  (edge_left <= int(value_floor) and edge_right > int(value_ceil))
 
         
 def check_occrnc_word(list_check,list_confid):
-    count=0
-    if  list_check != ['']:
-            for counter in range(len(list_check)):
-                if not (list_check[counter] in list_confid.split(';')):
-                    count += 1
-            if count == len(list_check):
-                return True
-
+    list_confid=list_confid.split(';')
+    return any(element in list_confid for element in list_check) or  list_check==['']
+                
             
-list_data_bigger = [int(age), int(achivments)]
-list_data_intrvl = [[int(pozitive[0]), int(pozitive[1])], [int(negative[0]), int(negative[1])],
-                  [int(owner[0]), int(owner[1])], [float(price[0]), float(price[1])]]
+
+list_data_intrvl = [
+    [int(pozitive[0]), int(pozitive[1])],
+    [int(negative[0]), int(negative[1])],
+    [int(owner[0]), int(owner[1])],
+    [float(price[0]), float(price[1])]
+]
 list_data_word = [categories, genre, tag, developer, publisher, platform]
+
 
 
 with open('steam.csv', encoding='utf-8') as f:
     r = csv.reader(f)
     
     for line in r:
-        if line[12]=='positive_ratings':
+        if line[12] =='positive_ratings':
             continue
         
-        line12 = [int(line[12])]
-        line13 = [int(line[13])]
-        line17 = [float(line[17])]
-        line12.append(int(line[12]))
-        line13.append(int(line[13]))
-        line17.append(float(line[17]))
+        list_data_bigger = [int(age), int(line[11]) ]
         line[16]=line[16].split('-')
-        list_line_intrvl=[line[12], line[13], line[16], line[17]]
-        list_line_word=[line[8], line[9], line[10], line[4], line[5], line[6]]
-        if line[1] == 'name':
+        list_line_smaller = [int(line[7]), int(achivments)]
+        list_line_intrvl = [
+            [int(line[12]), int(line[12])],
+            [int(line[13]), int(line[13])],
+            [int(line[16][0]), int(line[16][1])],
+            [float(line[17]), float(line[17])]]
+        list_line_word = [
+            line[8],
+            line[9],
+            line[10],
+            line[4],
+            line[5],
+            line[6]
+            ]
+            
+        
+        if line[3] != str(english) and english!='':
             continue
         
-        if line[3] != str(english):
+        if not all(
+            check_smaller (
+                list_line_smaller [count],
+                list_data_bigger[count]
+            )
+            for count in range(2) 
+        ): 
             continue
         
-        for count in range(2):
-            if check_bigger ((list_data_bigger[count]),(line[7+4*count])):
-                continue
-        
-        for count in range(4):
-            if check_occrnc_intrvl ((list_data_intrvl[count][0]), (list_line_intrvl[count][0]),
-                                    (list_line_intrvl[1]), (list_data_intrvl[count][1])):
-                continue
+        if not all(
+            check_occrnc_intrvl (
+                list_data_intrvl [count] [0],
+                list_line_intrvl [count] [0],
+                list_line_intrvl [count] [1],
+                list_data_intrvl [count] [1]
+                )
+            for count in range(4)
+        ):
+            continue
+            
          
-        for count in range(6):
-            if check_occrnc_word(list_data_word[count], list_line_word[count]):
-                continue
-        print(line[1])
+        if  not all(
+            check_occrnc_word(
+                list_data_word [count],
+                list_line_word[count]
+            ) 
+            for count in range(6)
+        ):
+            continue
         
+        print(line[1])
